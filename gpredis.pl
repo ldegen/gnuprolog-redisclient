@@ -3,18 +3,18 @@
     DATE: Nov 2013
     DOES: Provides a simple Redis client for GNU Prolog using only Prolog
     WHOM: Sean Charles  <sean at objitsu dot com>
-    
+
     This program provides a simple Redis client. It does not allow for any
     persistent connection behaviours so pub/sub etc is not possible (yet).
-    
+
     All other commands are supported using a simple form whereby a functor
     name makes the first part of the command and the arguments are then added
     as the remaining Redis command.
-    
+
     Please read the test scripts for full examples on how to use.
-   
+
     BUGS/IDEAS: Please submit to the email address shown above.
-    
+
     LICENCE: MIT, see the LICENCE file.
 */
 
@@ -57,21 +57,26 @@ redis(Req) :-
 redis_print([]) :- !.
 
 redis_print([number(X)|Xs]) :-
+	!,
 	format('NUMBER: ~d~n', [X]),
 	redis_print(Xs).
 
 redis_print([X|Xs]) :-
+	!,
 	X =.. [_, V],
 	format('STRING: ~s~n', [V]),
 	redis_print(Xs).
 
 redis_print(bulk(X)) :-
+	!,
 	format('STRING: ~s~n', [X]).
 
 redis_print(number(X)) :-
+	!,
 	format('NUMBER: ~d~n', [X]).
 
 redis_print(status(X)) :-
+	!,
 	format('STATUS: ~s~n', [X]).
 
 redis_print(nil) :-
@@ -164,7 +169,7 @@ gpredis_get_line(SI, Acc, Line) :-
 gpredis_wrap_as(_, nil, nil).
 
 gpredis_wrap_as(Type, Value, Out) :-
-	Out =.. [Type, Value]. 
+	Out =.. [Type, Value].
 
 
 %%============================================================================
