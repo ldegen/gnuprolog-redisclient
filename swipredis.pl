@@ -8,7 +8,9 @@
           redis_do/3,
           redis/1,
           redis_print/1,
-          redis_subscribe/2]).
+          redis_subscribe/2,
+          redis_subscribe_only/2,
+          redis_next_msg/2]).
 
 
 redis_subscribe(Topic,Msg):-
@@ -21,11 +23,18 @@ redis_subscribe(Topic,Msg):-
       )
   ).
 
-redis_subscribe(redis(SI,SO,_),Topic,Msg):-
-  gpredis_build_cmd(subscribe(Topic),Cmd),
-  gpredis_write(SO,Cmd),
+redis_subscribe(R,Topic,Msg):-
+  redis_subscribe_only(R,Topic),
   repeat,
+  redis_next_msg(R,Msg).
+
+redis_next_msg(redis(SI,_,_),Msg):-
   get_msg(SI,Msg).
+
+
+redis_subscribe_only(redis(_,SO,_),Topic):-
+  gpredis_build_cmd(subscribe(Topic),Cmd),
+  gpredis_write(SO,Cmd).
 
 get_msg(SI,Out):-
   get_byte(SI, ReplyMode),
